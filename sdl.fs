@@ -1,3 +1,8 @@
+\ RilouwShell 0.1.0
+\ Copyright (c) 2019 Jerome Martin
+\ Released under the terms of the GNU GPL version 3
+\ http://rilouw.eu/project/rilouwos
+
 c-library sdl_lib
 s" SDL" add-lib
 s" SDL_image" add-lib
@@ -18,7 +23,7 @@ c-function sdl-wm-set-caption  SDL_WM_SetCaption  a a -- void   ( *title *icon -
 c-function sdl-show-cursor     SDL_ShowCursor     n -- n        ( toggle -- status )
 
 c-function sdl-display-format      SDL_DisplayFormat     a -- a                ( *surface -- *surface )
-c-function sdl-create-rgb-surface  SDL_CreateRGBSurface  n n n n n n n n -- a  ( flags w h dp r g b a -- *surface )
+c-function sdl-create-rgb-surface  SDL_CreateRGBSurface  n n n n n n n n -- a  ( flags w h bpp r g b a -- *surface )
 c-function sdl-map-rgb             SDL_MapRGB            a n n n -- n          ( *format r g b -- pixel )
 c-function sdl-blit-surface        SDL_BlitSurface       a a a a -- n          ( *src *srcrect *dst *dstrect -- )
 c-function sdl-flip                SDL_Flip              a -- n                ( *surface -- )

@@ -1,2 +1,2 @@
-# rilouwshell
+# RilouwShell
 Forth minimalist UI for RilouwOS

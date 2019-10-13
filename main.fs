@@ -1,4 +1,12 @@
+\ RilouwShell 0.1.0
+\ Copyright (c) 2019 Jerome Martin
+\ Released under the terms of the GNU GPL version 3
+\ http://rilouw.eu/project/rilouwos
+
 require sdl.fs
+
+require draw.fs
+require button.fs
 
 \ --- Constants ---
 
@@ -6,17 +14,14 @@ require sdl.fs
 384 constant HEIGHT
  16 constant TILE
 
-\ --- Colors ---
-0 value Black
-0 value Orange
-
 \ --- Global variables ---
 0 value quit?
 0 value screen-surface
 0 value buffer-surface
 
 create tmp-event sdl-event% %allot drop
-create tmp-rect sdl-rect% %allot drop
+
+create ok-btn button% %allot drop
 
 \ --- Utils ---
 
@@ -46,23 +51,9 @@ create tmp-rect sdl-rect% %allot drop
   then
 ;
 
-: draw-rect { surface x1 y1 x2 y2 color -- }
-  x1 tmp-rect sdl-rect-x w!
-  y1 tmp-rect sdl-rect-y w!
-  x2 x1 - tmp-rect sdl-rect-w w!
-  y2 y1 - tmp-rect sdl-rect-h w!
-  surface tmp-rect color sdl-fill-rect drop
-;
-
 \ --- Main program ---
 
-: init-colors
-  screen-surface sdl-surface-format @
-  dup   0   0   0 sdl-map-rgb to Black
-      233 129  50 sdl-map-rgb to Orange
-;
-
-: init
+: init-window ( -- )
   SDL_INIT_VIDEO sdl-init
   0<> s" Unable to initialize SDL" ?error
 
@@ -70,13 +61,25 @@ create tmp-rect sdl-rect% %allot drop
   dup 0< s" Unable to set video mode" ?error
   to screen-surface
 
-  s" Rilouw Desktop0" terminate-str NULL sdl-wm-set-caption
+  s" Rilouw Shell0" terminate-str NULL sdl-wm-set-caption
 
-  s" mockups/ui.png0" load-image to buffer-surface
-  \ SDL_SWSURFACE 512 384 16 0 0 0 0 sdl-create-rgb-surface to buffer-surface
+  \ s" mockups/ui.png0" load-image to buffer-surface
+  SDL_SWSURFACE 512 384 16 0 0 0 0 sdl-create-rgb-surface to buffer-surface
 ;
 
-: process-input
+: init-colors ( -- )
+  screen-surface sdl-surface-format @
+  dup   0   0   0 sdl-map-rgb to Black
+      233 129  50 sdl-map-rgb to Orange
+;
+
+: init-page ( -- )
+  1 tile/pos ok-btn button-x !
+  1 tile/pos ok-btn button-y !
+  4 tile/pos ok-btn button-w !
+;
+
+: process-input ( -- )
   begin
     tmp-event sdl-poll-event \ while there is an event
   while
@@ -95,27 +98,29 @@ create tmp-rect sdl-rect% %allot drop
   repeat
 ;
 
-: render
-  \ buffer-surface 2 2 30 23 rect/pos Orange draw-rect
+: render ( -- )
+  \ buffer-surface 1 1 30 23 rect/pos Orange draw-rect
+  buffer-surface ok-btn render-button
 ;
 
-: flip
+: flip ( -- )
   buffer-surface NULL screen-surface NULL sdl-blit-surface drop
   screen-surface sdl-flip drop
 ;
 
-: clean
-  screen-surface 0 Black sdl-fill-rect drop
+: clean ( -- )
+  screen-surface NULL Black sdl-fill-rect drop
 ;
 
-: shutdown
+: shutdown ( -- )
   buffer-surface sdl-free-surface 
   sdl-quit
 ;
 
 : start-main-loop ( -- )
-  init
+  init-window
   init-colors
+  init-page
 
   begin
     quit? 0=
