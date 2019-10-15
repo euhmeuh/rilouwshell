@@ -35,6 +35,11 @@ create corner-rect sdl-rect% %allot drop
   2swap
 ;
 
+: blit ( src dst x y -- )
+  0 0 tmp-rect rect! \ w and h are not used
+  NULL swap tmp-rect sdl-blit-surface drop
+;
+
 : top-left     ( -- )  0 0 2 2 corner-rect rect! ;
 : top-right    ( -- )  2 0 2 2 corner-rect rect! ;
 : bottom-left  ( -- )  0 2 2 2 corner-rect rect! ;
@@ -105,7 +110,7 @@ create corner-rect sdl-rect% %allot drop
   \ OOOOBBBB
 
   8 4 new-surface to corners-surface
-  corners-surface true Transparent sdl-set-color-key
+  corners-surface true Transparent sdl-set-color-key drop
   corners-surface 0 0 4 4 Orange draw-rect
   corners-surface 1 1 2 2 Transparent draw-rect
   corners-surface 4 0 4 4 Black draw-rect
