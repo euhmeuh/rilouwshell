@@ -12,9 +12,66 @@ struct
   cell% field button-w
 end-struct button%
 
-: render-button  ( surface button -- )
-  dup button-x @ swap
-  dup button-y @ swap
-  button-w @
-  Orange draw-hline
+: render-button  { surface btn -- }
+  \ Base rectangle
+  surface
+  btn button-x @ tile/pos 1-
+  btn button-y @ tile/pos 1-
+  btn button-w @ tile/pos 2 +
+  1 tile/pos 4 +
+  Orange draw-rect
+
+  \ Black inside
+  surface
+  btn button-x @ tile/pos
+  btn button-y @ tile/pos
+  btn button-w @ tile/pos
+  1 tile/pos
+  Black draw-rect
+
+  \ Full corners
+  surface
+  btn button-x @ tile/pos
+  btn button-y @ tile/pos
+  top-left draw-corner
+
+  surface
+  btn button-x @ tile/pos
+  btn button-y @ tile/pos 14 +
+  bottom-left draw-corner
+
+  surface
+  btn button-x @ tile/pos
+  btn button-w @ tile/pos + 2 -
+  btn button-y @ tile/pos
+  top-right draw-corner
+
+  surface
+  btn button-x @ tile/pos
+  btn button-w @ tile/pos + 2 -
+  btn button-y @ tile/pos 14 +
+  bottom-right draw-corner
+
+  \ Empty corners
+  surface
+  btn button-x @ tile/pos 1-
+  btn button-y @ tile/pos 1-
+  top-left inverted draw-corner
+
+  surface
+  btn button-x @ tile/pos 1-
+  btn button-y @ tile/pos 17 +
+  bottom-left inverted draw-corner
+
+  surface
+  btn button-x @ tile/pos
+  btn button-w @ tile/pos + 1-
+  btn button-y @ tile/pos 1-
+  top-right inverted draw-corner
+
+  surface
+  btn button-x @ tile/pos
+  btn button-w @ tile/pos + 1-
+  btn button-y @ tile/pos 17 +
+  bottom-right inverted draw-corner
 ;

@@ -29,6 +29,7 @@ c-function sdl-blit-surface        SDL_BlitSurface       a a a a -- n          (
 c-function sdl-flip                SDL_Flip              a -- n                ( *surface -- )
 c-function sdl-free-surface        SDL_FreeSurface       a -- void             ( *surface -- )
 c-function sdl-fill-rect           SDL_FillRect          a a n -- n            ( *dst *dstrect color -- error )
+c-function sdl-set-color-key       SDL_SetColorKey       a n n -- n            ( *surface bool color -- error )
 
 \ -- Events -- 
 
