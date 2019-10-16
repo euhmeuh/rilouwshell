@@ -15,15 +15,24 @@ struct
   ptr% field button-surface-clicked
 end-struct button%
 
-: init-button  ( button -- )
+: new-button-surface ( button -- surface )
+  button-w @ tile/pos 2 +
+  TILE 6 +
+  new-surface
+;
+
+: init-normal-surface  ( button -- )
   >r
 
-  r@ button-w @ tile/pos 2 +
-  TILE 4 +
-  new-surface r@ button-surface-normal !
+  r@ new-button-surface
+  r@ button-surface-normal !
 
   \ Base rectangle
-  r@ button-surface-normal @ NULL Orange sdl-fill-rect drop
+  r@ button-surface-normal @
+  0 0
+  r@ button-w @ tile/pos 2 +
+  TILE 4 +
+  Orange draw-rect
 
   \ Black inside
   r@ button-surface-normal @
@@ -73,10 +82,60 @@ end-struct button%
   r> drop
 ;
 
-: render-button { surface button -- }
-  button button-surface-normal @
-  surface
-  button button-x @ tile/pos 1-
-  button button-y @ tile/pos 1-
+: init-clicked-surface ( button -- )
+  >r
+
+  r@ new-button-surface r@ button-surface-clicked !
+
+  \ copy normal button
+  r@ button-surface-normal @
+  r@ button-surface-clicked @
+  0 2 blit
+
+  \ erase bottom corners
+  r@ button-surface-clicked @
+  0
+  TILE 2 +
+  bottom-left inverted draw-corner
+
+  r@ button-surface-clicked @
+  r@ button-w @ tile/pos
+  TILE 2 +
+  bottom-right inverted draw-corner
+
+  \ erase bottom lines
+  r@ button-surface-clicked @
+  1 20
+  r@ button-w @ tile/pos
+  Black draw-hline
+
+  r@ button-surface-clicked @
+  2 21
+  r@ button-w @ tile/pos 2 -
+  Black draw-hline
+
+  r> drop
+;
+
+: init-button ( button -- )
+  dup init-normal-surface
+  init-clicked-surface
+;
+
+: get-current-button-surface ( button -- surface )
+  dup focused? if
+    button-surface-clicked @
+  else
+    button-surface-normal @
+  then
+;
+
+: render-button ( surface button -- )
+  >r
+
+  r@ get-current-button-surface
+  swap
+  r@ button-x @ tile/pos 1-
+  r> button-y @ tile/pos 1-
   blit
 ;

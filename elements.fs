@@ -3,6 +3,7 @@
 \ Released under the terms of the GNU GPL version 3
 \ http://rilouw.eu/project/rilouwshell
 
+(
 struct
   cell% field label-text
   cell% field label-primary
@@ -34,3 +35,17 @@ struct
   cell% field toggle-y
   cell% field toggle-w
 end-struct toggle%
+)
+
+0 constant TYPE-LABEL
+1 constant TYPE-BUTTON
+2 constant TYPE-INPUT
+3 constant TYPE-AREA
+4 constant TYPE-TOGGLE
+
+: render-element ( surface element type -- )
+  case
+    TYPE-BUTTON of render-button endof
+    2drop
+  endcase
+;

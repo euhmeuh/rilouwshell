@@ -6,8 +6,12 @@
 require sdl.fs
 
 require utils.fs
+require event.fs
 require draw.fs
 require button.fs
+
+require elements.fs
+require page.fs
 
 \ --- Constants ---
 
@@ -15,9 +19,6 @@ require button.fs
 384 constant HEIGHT
 
 \ --- Global variables ---
-0 value quit?
-
-create tmp-event sdl-event% %allot drop
 
 create ok-btn button% %allot drop
 
@@ -41,29 +42,12 @@ create ok-btn button% %allot drop
   1 ok-btn button-y !
   4 ok-btn button-w !
   ok-btn init-button
-;
 
-: process-input ( -- )
-  begin
-    tmp-event sdl-poll-event \ while there is an event
-  while
-    tmp-event sdl-event-type c@
-    case
-      SDL_KEYDOWN of 
-        tmp-event sdl-event-key sdl-keysym-sym uw@
-        case
-          SDLK_ESCAPE of true to quit? endof
-          SDLK_q      of true to quit? endof
-        endcase
-      endof
-
-      SDL_MOUSEMOTION of endof
-    endcase
-  repeat
+  ok-btn TYPE-BUTTON add-to-page
 ;
 
 : render ( -- )
-  buffer-surface ok-btn render-button
+  buffer-surface render-page
 ;
 
 : start-main-loop ( -- )
