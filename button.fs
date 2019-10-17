@@ -43,41 +43,41 @@ end-struct button%
 
   \ Full corners
   r@ button-surface-normal @
-  1 1 top-left draw-corner
+  1 1 CORNER-TL draw-corner
 
   r@ button-surface-normal @
   1
   TILE 1-
-  bottom-left draw-corner
+  CORNER-BL draw-corner
 
   r@ button-surface-normal @
   r@ button-w @ tile/pos 1 -
   1
-  top-right draw-corner
+  CORNER-TR draw-corner
 
   r@ button-surface-normal @
   r@ button-w @ tile/pos 1 -
   TILE 1-
-  bottom-right draw-corner
+  CORNER-BR draw-corner
 
   \ Empty corners
   r@ button-surface-normal @
-  0 0 top-left inverted draw-corner
+  0 0 CORNER-TL INVERTED draw-corner
 
   r@ button-surface-normal @
   0
   TILE 2 +
-  bottom-left inverted draw-corner
+  CORNER-BL INVERTED draw-corner
 
   r@ button-surface-normal @
   r@ button-w @ tile/pos
   0
-  top-right inverted draw-corner
+  CORNER-TR INVERTED draw-corner
 
   r@ button-surface-normal @
   r@ button-w @ tile/pos
   TILE 2 +
-  bottom-right inverted draw-corner
+  CORNER-BR INVERTED draw-corner
 
   r> drop
 ;
@@ -96,12 +96,12 @@ end-struct button%
   r@ button-surface-clicked @
   0
   TILE 2 +
-  bottom-left inverted draw-corner
+  CORNER-BL INVERTED draw-corner
 
   r@ button-surface-clicked @
   r@ button-w @ tile/pos
   TILE 2 +
-  bottom-right inverted draw-corner
+  CORNER-BR INVERTED draw-corner
 
   \ erase bottom lines
   r@ button-surface-clicked @

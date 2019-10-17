@@ -11,10 +11,11 @@ $EC06 value Orange
 
 0 value screen-surface
 0 value buffer-surface
-0 value corners-surface
 
-create tmp-rect sdl-rect% %allot drop
-create corner-rect sdl-rect% %allot drop
+\ -- Rectangle --
+
+create src-rect sdl-rect% %allot drop
+create dst-rect sdl-rect% %allot drop
 
 : rect! ( x y w h rect -- )
   >r
@@ -35,42 +36,37 @@ create corner-rect sdl-rect% %allot drop
   2swap
 ;
 
+\ -- Drawing primitives --
+
 : blit ( src dst x y -- )
-  0 0 tmp-rect rect! \ w and h are not used
-  NULL swap tmp-rect sdl-blit-surface drop
+  0 0 dst-rect rect! \ w and h are not used
+  NULL swap dst-rect sdl-blit-surface drop
 ;
 
-: top-left     ( -- )  0 0 2 2 corner-rect rect! ;
-: top-right    ( -- )  2 0 2 2 corner-rect rect! ;
-: bottom-left  ( -- )  0 2 2 2 corner-rect rect! ;
-: bottom-right ( -- )  2 2 2 2 corner-rect rect! ;
-
-: inverted  ( -- )
-  corner-rect dup sdl-rect-x @ 4 + swap sdl-rect-x w!
-;
-
-: draw-corner ( surface x y -- )
-  2 2 tmp-rect rect!
-  >r \ surface
-  corners-surface corner-rect r> tmp-rect sdl-blit-surface drop
+: draw-tileset ( surface x y tileset tile -- )
+  over swap \ keep tileset
+  tileset->rect src-rect rect!
+  -rot 2 2 dst-rect rect!
+  tileset-surface @ ( surface tileset-surface )
+  src-rect rot dst-rect sdl-blit-surface drop
 ;
 
 : draw-rect ( surface x y w h color -- )
   >r \ color
-  ( x y w h ) tmp-rect rect!
-  ( surface ) tmp-rect r> sdl-fill-rect drop
+  ( x y w h ) src-rect rect!
+  ( surface ) src-rect r> sdl-fill-rect drop
 ;
 
 : draw-hline ( surface x y w color -- )
   >r \ color
-  ( x y w ) 1 tmp-rect rect!
-  ( surface ) tmp-rect r> sdl-fill-rect drop
+  ( x y w ) 1 src-rect rect!
+  ( surface ) src-rect r> sdl-fill-rect drop
 ;
 
 : draw-vline ( surface x y h color -- )
   >r \ color
-  ( x y h ) 1 swap tmp-rect rect!
-  ( surface ) tmp-rect r> sdl-fill-rect drop
+  ( x y h ) 1 swap src-rect rect!
+  ( surface ) src-rect r> sdl-fill-rect drop
 ;
 
 : new-surface ( width height -- surface )
@@ -115,14 +111,74 @@ create corner-rect sdl-rect% %allot drop
  0 0 0 0 sdl-create-rgb-surface-from
 ;
 
-\ -- Global sprites --
+\ -- Corners and focus --
+
+create corners-tileset tileset% %allot drop
+create focus-tileset tileset% %allot drop
 
 sprite
-l: OOOOBBBB
-l: O..OB..B
-l: O..OB..B
-l: OOOOBBBB
+l: OOOO
+l: O..O
+l: O..O
+l: OOOO
+l: BBBB
+l: B..B
+l: B..B
+l: BBBB
 end-sprite SPRITE-CORNERS
+
+sprite
+l: ...OOOOOOOO...
+l: ..O........O..
+l: .O..........O.
+l: O............O
+l: O............O
+l: O............O
+l: O............O
+l: O............O
+l: O............O
+l: O............O
+l: O............O
+l: .O..........O.
+l: ..O........O..
+l: ...OOOOOOOO...
+end-sprite SPRITE-FOCUS
+
+: init-corners ( -- )
+  SPRITE-CORNERS load-sprite
+  dup true Transparent sdl-set-color-key drop
+  corners-tileset tileset-surface !
+  2 corners-tileset tileset-w !
+  2 corners-tileset tileset-tile-size !
+;
+
+0 constant CORNER-TL
+1 constant CORNER-TR
+2 constant CORNER-BL
+3 constant CORNER-BR
+
+: INVERTED  ( corner-tile -- corner-tile )  4 + ;
+
+: draw-corner ( surface x y n -- )
+  corners-tileset swap draw-tileset
+;
+
+: init-focus ( -- )
+  SPRITE-FOCUS load-sprite
+  dup true Transparent sdl-set-color-key drop
+  focus-tileset tileset-surface !
+  2 focus-tileset tileset-w !
+  7 focus-tileset tileset-tile-size !
+;
+
+0 constant FOCUS-TL
+1 constant FOCUS-TR
+2 constant FOCUS-BL
+3 constant FOCUS-BR
+
+: draw-focus ( surface x y n -- )
+  focus-tileset swap draw-tileset
+;
 
 \ -- Initializations --
 
@@ -142,14 +198,10 @@ end-sprite SPRITE-CORNERS
   2r> new-surface to buffer-surface
 ;
 
-: init-corners ( -- )
-  SPRITE-CORNERS load-sprite to corners-surface
-  corners-surface true Transparent sdl-set-color-key drop
-;
-
 : init-draw ( width height -- )
   init-window
   init-corners
+  init-focus
 ;
 
 : flip ( -- )
