@@ -12,14 +12,14 @@ variable mouse-y
 create tmp-event sdl-event% %allot drop
 
 : focused? ( element -- )  focused-element = ;
+: reset-focus ( -- )  0 to focused-element ;
 : update-focus ( -- )
-  0 to focused-element
   page-pointer 0 do
     PAGE i cells + 2@
     over -rot \ keep element
     get-element-rect
     mouse-x @ mouse-y @ point-in-rect? if
-      ( element ) to focused-element unloop exit
+      ( element ) to focused-element leave
     else drop then
   2 +loop
 ;

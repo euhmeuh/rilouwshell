@@ -5,9 +5,9 @@
 
 16 constant TILE
 
+0 value Transparent
 0 value Black
 0 value Orange
-0 value Transparent
 
 0 value screen-surface
 0 value buffer-surface
@@ -76,6 +76,45 @@ create corner-rect sdl-rect% %allot drop
 : new-surface ( width height -- surface )
   SDL_SWSURFACE -rot 16 0 0 0 0 sdl-create-rgb-surface
 ;
+
+\ -- Sprite definition --
+
+: sprite ( -- ) here 0 0 ;
+: end-sprite ( here w h <name> -- )
+  create rot , 2,
+  does> dup @ swap cell+ 2@
+;
+
+: l: ( w h <line> -- w h )
+  1+ \ increase h
+  swap ( h w )
+  parse-name dup -rot 2>r \ keep a copy of length on the stack
+  ( h w len ) max \ increase w
+  swap 2r> ( w h line len )
+  0 do
+    dup I + c@ case
+      [char] . of 0 c, endof
+      [char] B of 1 c, endof
+      [char] O of 2 c, endof
+      true abort" Wrong character! Expected a 'O', 'B' or '.'"
+    endcase
+  loop
+  drop
+;
+
+: spr-color ( n -- color )
+  case
+    1 of Black endof
+    2 of Orange endof
+    Transparent
+  endcase
+;
+
+: load-sprite ( sprite w h -- surface )
+  \ TODO
+;
+
+\ -- Initializations --
 
 : init-window ( width height -- )
   2>r

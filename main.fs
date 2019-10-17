@@ -7,6 +7,7 @@ require sdl.fs
 
 require utils.fs
 require draw.fs
+require sprites.fs
 
 require element.fs
 require page.fs
