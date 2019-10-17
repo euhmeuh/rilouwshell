@@ -130,7 +130,7 @@ end-struct button%
   then
 ;
 
-: render-button ( surface button -- )
+: (render-button) ( surface button -- )
   >r
 
   r@ get-current-button-surface
@@ -139,3 +139,16 @@ end-struct button%
   r> button-y @ tile/pos 1-
   blit
 ;
+
+' (render-button) is render-button
+
+: (get-button-rect) ( button -- x y w h )
+  >r
+
+  r@ button-x @ tile/pos
+  r@ button-y @ tile/pos
+  r> button-w @ tile/pos
+  TILE
+;
+
+' (get-button-rect) is get-button-rect

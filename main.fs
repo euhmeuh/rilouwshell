@@ -1,17 +1,18 @@
 \ RilouwShell 0.1.0
 \ Copyright (c) 2019 Jerome Martin
 \ Released under the terms of the GNU GPL version 3
-\ http://rilouw.eu/project/rilouwos
+\ http://rilouw.eu/project/rilouwshell
 
 require sdl.fs
 
 require utils.fs
-require event.fs
 require draw.fs
-require button.fs
 
-require elements.fs
+require element.fs
 require page.fs
+require event.fs
+
+require button.fs
 
 \ --- Constants ---
 
@@ -21,6 +22,7 @@ require page.fs
 \ --- Global variables ---
 
 create ok-btn button% %allot drop
+create big-btn button% %allot drop
 
 \ --- Utils ---
 
@@ -42,8 +44,13 @@ create ok-btn button% %allot drop
   1 ok-btn button-y !
   4 ok-btn button-w !
   ok-btn init-button
-
   ok-btn TYPE-BUTTON add-to-page
+
+  1 big-btn button-x !
+  3 big-btn button-y !
+  8 big-btn button-w !
+  big-btn init-button
+  big-btn TYPE-BUTTON add-to-page
 ;
 
 : render ( -- )
