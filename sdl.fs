@@ -24,6 +24,7 @@ c-function sdl-show-cursor     SDL_ShowCursor     n -- n        ( toggle -- stat
 
 c-function sdl-display-format      SDL_DisplayFormat     a -- a                ( *surface -- *surface )
 c-function sdl-create-rgb-surface  SDL_CreateRGBSurface  n n n n n n n n -- a  ( flags w h bpp r g b a -- *surface )
+c-function sdl-create-rgb-surface-from  SDL_CreateRGBSurfaceFrom  a n n n n n n n n -- a  ( pixels w h bpp pitch r g b a -- *surface )
 c-function sdl-map-rgb             SDL_MapRGB            a n n n -- n          ( *format r g b -- pixel )
 c-function sdl-blit-surface        SDL_BlitSurface       a a a a -- n          ( *src *srcrect *dst *dstrect -- )
 c-function sdl-flip                SDL_Flip              a -- n                ( *surface -- )

@@ -4,13 +4,6 @@
 \ http://rilouw.eu/project/rilouwshell
 
 sprite
-l: OOOOBBBB
-l: O..OB..B
-l: O..OB..B
-l: OOOOBBBB
-end-sprite SPRITE-CORNERS
-
-sprite
 l: ...OOOOOOOO...
 l: ..O........O..
 l: .O..........O.

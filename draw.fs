@@ -5,9 +5,9 @@
 
 16 constant TILE
 
-0 value Transparent
-0 value Black
-0 value Orange
+$0000 value Transparent
+$0020 value Black
+$EC06 value Orange
 
 0 value screen-surface
 0 value buffer-surface
@@ -81,8 +81,15 @@ create corner-rect sdl-rect% %allot drop
 
 : sprite ( -- ) here 0 0 ;
 : end-sprite ( here w h <name> -- )
+  align
   create rot , 2,
   does> dup @ swap cell+ 2@
+;
+
+: px, ( n -- )
+  dup
+  $FF and c,
+  $FF00 and 8 rshift c,
 ;
 
 : l: ( w h <line> -- w h )
@@ -93,26 +100,29 @@ create corner-rect sdl-rect% %allot drop
   swap 2r> ( w h line len )
   0 do
     dup I + c@ case
-      [char] . of 0 c, endof
-      [char] B of 1 c, endof
-      [char] O of 2 c, endof
+      [char] . of Transparent px, endof
+      [char] B of Black px, endof
+      [char] O of Orange px, endof
       true abort" Wrong character! Expected a 'O', 'B' or '.'"
     endcase
   loop
   drop
 ;
 
-: spr-color ( n -- color )
-  case
-    1 of Black endof
-    2 of Orange endof
-    Transparent
-  endcase
+: load-sprite ( sprite w h -- surface )
+ over 2* \ pitch
+ 16 swap \ bpp
+ 0 0 0 0 sdl-create-rgb-surface-from
 ;
 
-: load-sprite ( sprite w h -- surface )
-  \ TODO
-;
+\ -- Global sprites --
+
+sprite
+l: OOOOBBBB
+l: O..OB..B
+l: O..OB..B
+l: OOOOBBBB
+end-sprite SPRITE-CORNERS
 
 \ -- Initializations --
 
@@ -132,33 +142,13 @@ create corner-rect sdl-rect% %allot drop
   2r> new-surface to buffer-surface
 ;
 
-: init-colors ( -- )
-  screen-surface sdl-surface-format @
-  dup   4   4   4 sdl-map-rgb to Black
-  dup 233 129  50 sdl-map-rgb to Orange
-        0   0   0 sdl-map-rgb to Transparent
-;
-
 : init-corners ( -- )
-  \ create a tileset for corners,
-  \ looking like this:
-
-  \ OOOOBBBB   O  Orange
-  \ O..OB..B   B  Black
-  \ O..OB..B   .  Transparent
-  \ OOOOBBBB
-
-  8 4 new-surface to corners-surface
+  SPRITE-CORNERS load-sprite to corners-surface
   corners-surface true Transparent sdl-set-color-key drop
-  corners-surface 0 0 4 4 Orange draw-rect
-  corners-surface 1 1 2 2 Transparent draw-rect
-  corners-surface 4 0 4 4 Black draw-rect
-  corners-surface 5 1 2 2 Transparent draw-rect
 ;
 
 : init-draw ( width height -- )
   init-window
-  init-colors
   init-corners
 ;
 
