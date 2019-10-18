@@ -8,8 +8,11 @@ create button-tileset tileset% %allot drop
 0 constant BORDER-LEFT
 1 constant BORDER-RIGHT
 
-: CLICKED   2 + ;
-: INVERTED  4 + ;
+0 value CLICKED
+0 value INVERTED
+
+: clicked? CLICKED if 2 + then ;
+: inverted? INVERTED if 4 + then ;
 
 sprite
 l: ..OO..........OO........
@@ -60,6 +63,44 @@ end-struct button%
   20 button-tileset tileset-tile-h !
 ;
 
+: draw-button-borders ( surface button -- )
+  >r
+
+  dup
+  2 2
+  button-tileset
+  BORDER-LEFT inverted? clicked? draw-tileset
+
+  ( surface )
+  r> button-w @ tile/pos 1+
+  2
+  button-tileset
+  BORDER-RIGHT inverted? clicked? draw-tileset
+;
+
+: draw-button-lines ( surface button -- )
+  >r
+
+  dup
+  5  CLICKED if 4 else 2 then
+  r@ button-w @ tile/pos 4 -
+  Orange draw-hline
+
+  ( surface )
+  CLICKED if
+    5  TILE 5 +
+    r@ button-w @ tile/pos 4 -
+    Orange draw-hline
+  else
+    5  TILE 3 +
+    r@ button-w @ tile/pos 4 -
+    3
+    Orange draw-rect
+  then
+
+  r> drop
+;
+
 : init-button ( button -- )
   >r
 
@@ -69,52 +110,21 @@ end-struct button%
   r@ new-button-surface
   r@ button-surface-clicked !
 
-  \ normal borders
+  r@ button-primary @ 0= to INVERTED
+
+  \ normal button
+  false to CLICKED
   r@ button-surface-normal @
-  2 2 button-tileset
-  BORDER-LEFT INVERTED draw-tileset
-
+  r@ draw-button-borders
   r@ button-surface-normal @
-  r@ button-w @ tile/pos 1+
-  2
-  button-tileset
-  BORDER-RIGHT INVERTED draw-tileset
+  r@ draw-button-lines
 
-  \ normal lines
-  r@ button-surface-normal @
-  5 2
-  r@ button-w @ tile/pos 4 -
-  Orange draw-hline
-
-  r@ button-surface-normal @
-  5
-  TILE 3 +
-  r@ button-w @ tile/pos 4 -
-  3
-  Orange draw-rect
-
-  \ clicked borders
+  \ clicked button
+  true to CLICKED
   r@ button-surface-clicked @
-  2 2 button-tileset
-  BORDER-LEFT INVERTED CLICKED draw-tileset
-
+  r@ draw-button-borders
   r@ button-surface-clicked @
-  r@ button-w @ tile/pos 1+
-  2
-  button-tileset
-  BORDER-RIGHT INVERTED CLICKED draw-tileset
-
-  \ clicked lines
-  r@ button-surface-clicked @
-  5 4
-  r@ button-w @ tile/pos 4 -
-  Orange draw-hline
-
-  r@ button-surface-clicked @
-  5
-  TILE 5 +
-  r@ button-w @ tile/pos 4 -
-  Orange draw-hline
+  r@ draw-button-lines
 
   r> drop
 ;
