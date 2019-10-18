@@ -6,12 +6,14 @@
 struct
   cell% field tileset-surface
   cell% field tileset-w
-  cell% field tileset-tile-size
+  cell% field tileset-tile-w
+  cell% field tileset-tile-h
 end-struct tileset%
 
 : tileset->rect { tileset tile -- x y w h }
-  tile tileset tileset-w @ /mod ( yi xi )
-  tileset tileset-tile-size @ dup ( yi xi s s )
-  -rot * -rot * swap ( x y )
-  tileset tileset-tile-size @ dup
+  tile tileset tileset-w @ /mod ( xi yi )
+  tileset tileset-tile-h @ * swap
+  tileset tileset-tile-w @ * swap
+  tileset tileset-tile-w @
+  tileset tileset-tile-h @
 ;

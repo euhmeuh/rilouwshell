@@ -111,21 +111,9 @@ create dst-rect sdl-rect% %allot drop
  0 0 0 0 sdl-create-rgb-surface-from
 ;
 
-\ -- Corners and focus --
+\ -- Focus indicator --
 
-create corners-tileset tileset% %allot drop
 create focus-tileset tileset% %allot drop
-
-sprite
-l: OOOO
-l: O..O
-l: O..O
-l: OOOO
-l: BBBB
-l: B..B
-l: B..B
-l: BBBB
-end-sprite SPRITE-CORNERS
 
 sprite
 l: ...OOOOOOOO...
@@ -144,37 +132,19 @@ l: ..O........O..
 l: ...OOOOOOOO...
 end-sprite SPRITE-FOCUS
 
-: init-corners ( -- )
-  SPRITE-CORNERS load-sprite
-  dup true Transparent sdl-set-color-key drop
-  corners-tileset tileset-surface !
-  2 corners-tileset tileset-w !
-  2 corners-tileset tileset-tile-size !
-;
-
-0 constant CORNER-TL
-1 constant CORNER-TR
-2 constant CORNER-BL
-3 constant CORNER-BR
-
-: INVERTED  ( corner-tile -- corner-tile )  4 + ;
-
-: draw-corner ( surface x y n -- )
-  corners-tileset swap draw-tileset
-;
+0 constant TOP-LEFT
+1 constant TOP-RIGHT
+2 constant BOTTOM-LEFT
+3 constant BOTTOM-RIGHT
 
 : init-focus ( -- )
   SPRITE-FOCUS load-sprite
   dup true Transparent sdl-set-color-key drop
   focus-tileset tileset-surface !
   2 focus-tileset tileset-w !
-  7 focus-tileset tileset-tile-size !
+  7 focus-tileset tileset-tile-w !
+  7 focus-tileset tileset-tile-h !
 ;
-
-0 constant FOCUS-TL
-1 constant FOCUS-TR
-2 constant FOCUS-BL
-3 constant FOCUS-BR
 
 : draw-focus ( surface x y n -- )
   focus-tileset swap draw-tileset
@@ -200,7 +170,6 @@ end-sprite SPRITE-FOCUS
 
 : init-draw ( width height -- )
   init-window
-  init-corners
   init-focus
 ;
 

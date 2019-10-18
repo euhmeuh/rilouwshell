@@ -3,6 +3,37 @@
 \ Released under the terms of the GNU GPL version 3
 \ http://rilouw.eu/project/rilouwshell
 
+create button-tileset tileset% %allot drop
+
+0 constant BORDER-LEFT
+1 constant BORDER-RIGHT
+
+: CLICKED   2 + ;
+: INVERTED  4 + ;
+
+sprite
+l: ..OO..........OO........
+l: .OOOO........OOOO.......
+l: OOOOOO..OO..OOBBOO..OO..
+l: OOOOOO.OOOO.OBBBBO.OOOO.
+l: OOOOOOOOOOOOOBBBBOOOBBOO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OOOOOOOOOOOOOBBBBOOBBBBO
+l: OBOOBOOOOOOOOOBBOOOBBBBO
+l: OBBBBOOOOOOOOOOOOOOBBBBO
+l: OBBBBOOOOOOOOOOOOOOOBBOO
+l: .OBBO..OOOO..OOOO..OOOO.
+l: ..OO....OO....OO....OO..
+end-sprite BUTTON-SPRITE
+
 struct
   cell% field button-text
   cell% field button-primary
@@ -16,110 +47,76 @@ struct
 end-struct button%
 
 : new-button-surface ( button -- surface )
-  button-w @ tile/pos 2 +
-  TILE 6 +
+  button-w @ tile/pos 6 +
+  TILE 9 +
   new-surface
 ;
 
-: init-normal-surface  ( button -- )
-  >r
-
-  r@ new-button-surface
-  r@ button-surface-normal !
-
-  \ Base rectangle
-  r@ button-surface-normal @
-  0 0
-  r@ button-w @ tile/pos 2 +
-  TILE 4 +
-  Orange draw-rect
-
-  \ Black inside
-  r@ button-surface-normal @
-  1 1
-  r@ button-w @ tile/pos
-  TILE
-  Black draw-rect
-
-  \ Full corners
-  r@ button-surface-normal @
-  1 1 CORNER-TL draw-corner
-
-  r@ button-surface-normal @
-  1
-  TILE 1-
-  CORNER-BL draw-corner
-
-  r@ button-surface-normal @
-  r@ button-w @ tile/pos 1 -
-  1
-  CORNER-TR draw-corner
-
-  r@ button-surface-normal @
-  r@ button-w @ tile/pos 1 -
-  TILE 1-
-  CORNER-BR draw-corner
-
-  \ Empty corners
-  r@ button-surface-normal @
-  0 0 CORNER-TL INVERTED draw-corner
-
-  r@ button-surface-normal @
-  0
-  TILE 2 +
-  CORNER-BL INVERTED draw-corner
-
-  r@ button-surface-normal @
-  r@ button-w @ tile/pos
-  0
-  CORNER-TR INVERTED draw-corner
-
-  r@ button-surface-normal @
-  r@ button-w @ tile/pos
-  TILE 2 +
-  CORNER-BR INVERTED draw-corner
-
-  r> drop
-;
-
-: init-clicked-surface ( button -- )
-  >r
-
-  r@ new-button-surface r@ button-surface-clicked !
-
-  \ copy normal button
-  r@ button-surface-normal @
-  r@ button-surface-clicked @
-  0 2 blit
-
-  \ erase bottom corners
-  r@ button-surface-clicked @
-  0
-  TILE 2 +
-  CORNER-BL INVERTED draw-corner
-
-  r@ button-surface-clicked @
-  r@ button-w @ tile/pos
-  TILE 2 +
-  CORNER-BR INVERTED draw-corner
-
-  \ erase bottom lines
-  r@ button-surface-clicked @
-  1 20
-  r@ button-w @ tile/pos
-  Black draw-hline
-
-  r@ button-surface-clicked @
-  2 21
-  r@ button-w @ tile/pos 2 -
-  Black draw-hline
-
-  r> drop
+: init-buttons ( -- )
+  BUTTON-SPRITE load-sprite
+  button-tileset tileset-surface !
+  8 button-tileset tileset-w !
+  3 button-tileset tileset-tile-w !
+  20 button-tileset tileset-tile-h !
 ;
 
 : init-button ( button -- )
-  dup init-normal-surface
-  init-clicked-surface
+  >r
+
+  \ init surfaces
+  r@ new-button-surface
+  r@ button-surface-normal !
+  r@ new-button-surface
+  r@ button-surface-clicked !
+
+  \ normal borders
+  r@ button-surface-normal @
+  2 2 button-tileset
+  BORDER-LEFT INVERTED draw-tileset
+
+  r@ button-surface-normal @
+  r@ button-w @ tile/pos 1+
+  2
+  button-tileset
+  BORDER-RIGHT INVERTED draw-tileset
+
+  \ normal lines
+  r@ button-surface-normal @
+  5 2
+  r@ button-w @ tile/pos 4 -
+  Orange draw-hline
+
+  r@ button-surface-normal @
+  5
+  TILE 3 +
+  r@ button-w @ tile/pos 4 -
+  3
+  Orange draw-rect
+
+  \ clicked borders
+  r@ button-surface-clicked @
+  2 2 button-tileset
+  BORDER-LEFT INVERTED CLICKED draw-tileset
+
+  r@ button-surface-clicked @
+  r@ button-w @ tile/pos 1+
+  2
+  button-tileset
+  BORDER-RIGHT INVERTED CLICKED draw-tileset
+
+  \ clicked lines
+  r@ button-surface-clicked @
+  5 4
+  r@ button-w @ tile/pos 4 -
+  Orange draw-hline
+
+  r@ button-surface-clicked @
+  5
+  TILE 5 +
+  r@ button-w @ tile/pos 4 -
+  Orange draw-hline
+
+  r> drop
 ;
 
 : get-current-button-surface ( button -- surface )
@@ -132,11 +129,10 @@ end-struct button%
 
 : (render-button) ( surface button -- )
   >r
-
   r@ get-current-button-surface
   swap
-  r@ button-x @ tile/pos 1-
-  r> button-y @ tile/pos 1-
+  r@ button-x @ tile/pos 3 -
+  r> button-y @ tile/pos 3 -
   blit
 ;
 
@@ -144,7 +140,6 @@ end-struct button%
 
 : (get-button-rect) ( button -- x y w h )
   >r
-
   r@ button-x @ tile/pos
   r@ button-y @ tile/pos
   r> button-w @ tile/pos

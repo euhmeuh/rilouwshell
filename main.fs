@@ -60,6 +60,7 @@ create big-btn button% %allot drop
 
 : start-main-loop ( -- )
   WIDTH HEIGHT init-draw
+  init-buttons
   init-page
 
   begin
