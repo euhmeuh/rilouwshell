@@ -50,8 +50,8 @@ struct
 end-struct button%
 
 : new-button-surface ( button -- surface )
-  button-w @ tile/pos 6 +
-  TILE 9 +
+  button-w @ tile/pos 2 +
+  TILE 4 +
   new-surface
 ;
 
@@ -67,13 +67,13 @@ end-struct button%
   >r
 
   dup
-  2 2
+  0 0
   button-tileset
   BORDER-LEFT inverted? clicked? draw-tileset
 
   ( surface )
-  r> button-w @ tile/pos 1+
-  2
+  r> button-w @ tile/pos 1-
+  0
   button-tileset
   BORDER-RIGHT inverted? clicked? draw-tileset
 ;
@@ -81,24 +81,30 @@ end-struct button%
 : draw-button-lines ( surface button -- )
   >r
 
+  \ higher line or rect
   dup
-  5  CLICKED if 4 else 2 then
+  3  CLICKED if 2 else 0 then
   r@ button-w @ tile/pos 4 -
-  Orange draw-hline
+  r@ button-primary @ if
+    TILE 1+ Orange draw-rect
+  else
+    Orange draw-hline
+  then
 
+  \ lower-line or rect
   ( surface )
-  CLICKED if
-    5  TILE 5 +
-    r@ button-w @ tile/pos 4 -
+  CLICKED
+  r@ button-primary @
+  or if
+    3  TILE 3 +
+    r> button-w @ tile/pos 4 -
     Orange draw-hline
   else
-    5  TILE 3 +
-    r@ button-w @ tile/pos 4 -
+    3  TILE 1+
+    r> button-w @ tile/pos 4 -
     3
     Orange draw-rect
   then
-
-  r> drop
 ;
 
 : init-button ( button -- )
@@ -124,25 +130,15 @@ end-struct button%
   r@ button-surface-clicked @
   r@ draw-button-borders
   r@ button-surface-clicked @
-  r@ draw-button-lines
-
-  r> drop
-;
-
-: get-current-button-surface ( button -- surface )
-  dup focused? if
-    button-surface-clicked @
-  else
-    button-surface-normal @
-  then
+  r> draw-button-lines
 ;
 
 : (render-button) ( surface button -- )
   >r
-  r@ get-current-button-surface
+  r@ button-surface-normal @
   swap
-  r@ button-x @ tile/pos 3 -
-  r> button-y @ tile/pos 3 -
+  r@ button-x @ tile/pos 1-
+  r> button-y @ tile/pos 1-
   blit
 ;
 

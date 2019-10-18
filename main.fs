@@ -44,6 +44,7 @@ create big-btn button% %allot drop
   1 ok-btn button-x !
   1 ok-btn button-y !
   4 ok-btn button-w !
+  true ok-btn button-primary !
   ok-btn init-button
   ok-btn TYPE-BUTTON add-to-page
 

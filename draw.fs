@@ -150,6 +150,13 @@ end-sprite SPRITE-FOCUS
   focus-tileset swap draw-tileset
 ;
 
+: draw-focus-around { surface x y w h -- }
+  surface x 3 -     y 3 -     TOP-LEFT     draw-focus
+  surface x w + 4 - y 3 -     TOP-RIGHT    draw-focus
+  surface x 3 -     y h + 2 - BOTTOM-LEFT  draw-focus
+  surface x w + 4 - y h + 2 - BOTTOM-RIGHT draw-focus
+;
+
 \ -- Initializations --
 
 : init-window ( width height -- )
@@ -179,7 +186,7 @@ end-sprite SPRITE-FOCUS
 ;
 
 : clean ( -- )
-  screen-surface NULL Black sdl-fill-rect drop
+  buffer-surface NULL Black sdl-fill-rect drop
 ;
 
 : shutdown ( -- )
