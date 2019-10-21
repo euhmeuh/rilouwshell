@@ -25,19 +25,6 @@ require button.fs
 create ok-btn button% %allot drop
 create big-btn button% %allot drop
 
-\ --- Utils ---
-
-: load-image ( str len -- surface )
-  2dup 2>r \ keep filename for error
-  terminate-str sdl-load-image dup 0= if
-    ." Unable to load image file: '" 2r> type ." '" cr
-  else
-    dup sdl-display-format
-    swap sdl-free-surface
-    2r> 2drop
-  then
-;
-
 \ --- Main program ---
 
 : init-page ( -- )
@@ -55,8 +42,12 @@ create big-btn button% %allot drop
   big-btn TYPE-BUTTON add-to-page
 ;
 
+create hello-str
+s" Hello world!" s,
+
 : render ( -- )
   buffer-surface render-page
+  buffer-surface hello-str 12 0 0 write-at
 ;
 
 : start-main-loop ( -- )

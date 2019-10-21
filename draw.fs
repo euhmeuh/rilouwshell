@@ -73,6 +73,19 @@ create dst-rect sdl-rect% %allot drop
   SDL_SWSURFACE -rot 16 0 0 0 0 sdl-create-rgb-surface
 ;
 
+\ -- Load images --
+
+: load-image ( str len -- surface )
+  2dup 2>r \ keep filename for error
+  terminate-str sdl-load-image dup 0= if
+    ." Unable to load image file: '" 2r> type ." '" cr
+  else
+    dup sdl-display-format
+    swap sdl-free-surface
+    2r> 2drop
+  then
+;
+
 \ -- Sprite definition --
 
 : sprite ( -- ) here 0 0 ;
@@ -157,6 +170,10 @@ end-sprite SPRITE-FOCUS
   surface x w + 4 - y h + 2 - BOTTOM-RIGHT draw-focus
 ;
 
+\ -- Font --
+
+require font.fs
+
 \ -- Initializations --
 
 : init-window ( width height -- )
@@ -178,6 +195,7 @@ end-sprite SPRITE-FOCUS
 : init-draw ( width height -- )
   init-window
   init-focus
+  init-font
 ;
 
 : flip ( -- )

@@ -38,7 +38,8 @@ l: ..OO....OO....OO....OO..
 end-sprite BUTTON-SPRITE
 
 struct
-  cell% field button-text
+  char% field button-text-len
+  cell% field button-text-str
   cell% field button-primary
   cell% field button-enabled
   cell% field button-x
