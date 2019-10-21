@@ -133,9 +133,18 @@ end-struct button%
   r> draw-button-lines
 ;
 
+: get-button-surface ( button -- surface )
+  dup focused?
+  mouse-left? and if
+    button-surface-clicked @
+  else
+    button-surface-normal @
+  then
+;
+
 : (render-button) ( surface button -- )
   >r
-  r@ button-surface-normal @
+  r@ get-button-surface
   swap
   r@ button-x @ tile/pos 1-
   r> button-y @ tile/pos 1-

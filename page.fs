@@ -8,6 +8,10 @@ create PAGE 20 cells allot
 
 variable mouse-x
 variable mouse-y
+variable mouse-buttons
+
+: mouse-left? ( -- b )  mouse-buttons @ 1 and ;
+: mouse-right? ( -- b )  mouse-buttons @ 4 and ;
 
 0 value focused-element
 
