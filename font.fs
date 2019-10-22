@@ -21,8 +21,8 @@ create font-tileset tileset% %allot drop
   
 ;
 
-: write-at { surface str len x y -- }
-  len 0 do
+: write-at { surface str x y -- }
+  str c@ 0 do
     surface
     x i CHAR-W * + y
     font-tileset

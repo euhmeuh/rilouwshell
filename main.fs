@@ -27,27 +27,28 @@ create big-btn button% %allot drop
 
 \ --- Main program ---
 
+create ok-button-text s" Okay" s,
+create big-button-text s" Hello world!" s,
+
 : init-page ( -- )
   1 ok-btn button-x !
   1 ok-btn button-y !
   4 ok-btn button-w !
   true ok-btn button-primary !
+  ok-button-text ok-btn button-text !
   ok-btn init-button
   ok-btn TYPE-BUTTON add-to-page
 
   1 big-btn button-x !
   3 big-btn button-y !
-  8 big-btn button-w !
+  9 big-btn button-w !
+  big-button-text big-btn button-text !
   big-btn init-button
   big-btn TYPE-BUTTON add-to-page
 ;
 
-create hello-str
-s" Hello world!" s,
-
 : render ( -- )
   buffer-surface render-page
-  buffer-surface hello-str 12 0 0 write-at
 ;
 
 : start-main-loop ( -- )

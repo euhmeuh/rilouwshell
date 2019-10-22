@@ -38,8 +38,7 @@ l: ..OO....OO....OO....OO..
 end-sprite BUTTON-SPRITE
 
 struct
-  char% field button-text-len
-  cell% field button-text-str
+  cell% field button-text
   cell% field button-primary
   cell% field button-enabled
   cell% field button-x
@@ -64,8 +63,18 @@ end-struct button%
   20 button-tileset tileset-tile-h !
 ;
 
-: draw-button-borders ( surface button -- )
+: select-button-surface ( button -- surface )
+  CLICKED if
+    button-surface-clicked @
+  else
+    button-surface-normal @
+  then
+;
+
+: draw-button-borders ( button -- )
   >r
+
+  r@ select-button-surface
 
   dup
   0 0
@@ -79,8 +88,10 @@ end-struct button%
   BORDER-RIGHT inverted? clicked? draw-tileset
 ;
 
-: draw-button-lines ( surface button -- )
+: draw-button-lines ( button -- )
   >r
+
+  r@ select-button-surface
 
   \ higher line or rect
   dup
@@ -108,6 +119,16 @@ end-struct button%
   then
 ;
 
+: draw-button-text ( button -- )
+  >r
+
+  r@ select-button-surface
+  r> button-text @
+  9
+  CLICKED if 5 else 3 then
+  write-at
+;
+
 : init-button ( button -- )
   >r
 
@@ -121,17 +142,15 @@ end-struct button%
 
   \ normal button
   false to CLICKED
-  r@ button-surface-normal @
   r@ draw-button-borders
-  r@ button-surface-normal @
   r@ draw-button-lines
+  r@ draw-button-text
 
   \ clicked button
   true to CLICKED
-  r@ button-surface-clicked @
   r@ draw-button-borders
-  r@ button-surface-clicked @
-  r> draw-button-lines
+  r@ draw-button-lines
+  r> draw-button-text
 ;
 
 : get-button-surface ( button -- surface )
