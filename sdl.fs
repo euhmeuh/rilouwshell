@@ -31,6 +31,7 @@ c-function sdl-flip                     SDL_Flip                  a -- n        
 c-function sdl-free-surface             SDL_FreeSurface           a -- void               ( *surface -- )
 c-function sdl-fill-rect                SDL_FillRect              a a n -- n              ( *dst *dstrect color -- error )
 c-function sdl-set-color-key            SDL_SetColorKey           a n n -- n              ( *surface bool color -- error )
+c-function sdl-set-colors               SDL_SetColors             a a n n -- n            ( *surface *colors first n -- result )
 
 \ -- Events -- 
 

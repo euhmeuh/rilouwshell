@@ -122,6 +122,8 @@ end-struct button%
 : draw-button-text ( button -- )
   >r
 
+  r@ button-primary @ invert-font
+
   r@ select-button-surface
   r> button-text @
   9

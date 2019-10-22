@@ -18,7 +18,9 @@ create font-tileset tileset% %allot drop
 ;
 
 : invert-font ( b -- )
-  
+  if InvertedPalette else Palette then
+  font-tileset tileset-surface @ swap
+  0 3 sdl-set-colors drop
 ;
 
 : write-at { surface str x y -- }

@@ -5,9 +5,18 @@
 
 16 constant TILE
 
-$0000 value Transparent
-$0020 value Black
-$EC06 value Orange
+create Palette
+  0 c,   0 c,  0 c, 1 allot \ Transparent
+  0 c,   4 c,  0 c, 1 allot \ Black
+232 c, 128 c, 48 c, 1 allot \ Orange
+create InvertedPalette
+  0 c,   0 c,  0 c, 1 allot \ Transparent
+232 c, 128 c, 48 c, 1 allot \ Orange
+  0 c,   4 c,  0 c, 1 allot \ Black
+
+0 constant Transparent
+1 constant Black
+2 constant Orange
 
 0 value screen-surface
 0 value buffer-surface
@@ -69,21 +78,23 @@ create dst-rect sdl-rect% %allot drop
   ( surface ) src-rect r> sdl-fill-rect drop
 ;
 
+: set-palette ( surface -- )
+  dup Palette 0 3 sdl-set-colors drop
+  true Transparent sdl-set-color-key drop
+;
+
 : new-surface ( width height -- surface )
-  SDL_SWSURFACE -rot 16 0 0 0 0 sdl-create-rgb-surface
+  SDL_SWSURFACE -rot 8 0 0 0 0 sdl-create-rgb-surface
+  dup set-palette
 ;
 
 \ -- Load images --
 
 : load-image ( str len -- surface )
-  2dup 2>r \ keep filename for error
+  2dup \ keep filename for error
   terminate-str sdl-load-image dup 0= if
-    ." Unable to load image file: '" 2r> type ." '" cr
-  else
-    dup sdl-display-format
-    swap sdl-free-surface
-    2r> 2drop
-  then
+    ." Unable to load image file: '" -rot type ." '" cr
+  else -rot 2drop then
 ;
 
 \ -- Sprite definition --
@@ -95,12 +106,6 @@ create dst-rect sdl-rect% %allot drop
   does> dup @ swap cell+ 2@
 ;
 
-: px, ( n -- )
-  dup
-  $FF and c,
-  $FF00 and 8 rshift c,
-;
-
 : l: ( w h <line> -- w h )
   1+ \ increase h
   swap ( h w )
@@ -109,9 +114,9 @@ create dst-rect sdl-rect% %allot drop
   swap 2r> ( w h line len )
   0 do
     dup I + c@ case
-      [char] . of Transparent px, endof
-      [char] B of Black px, endof
-      [char] O of Orange px, endof
+      [char] . of Transparent c, endof
+      [char] B of Black c, endof
+      [char] O of Orange c, endof
       true abort" Wrong character! Expected a 'O', 'B' or '.'"
     endcase
   loop
@@ -119,9 +124,10 @@ create dst-rect sdl-rect% %allot drop
 ;
 
 : load-sprite ( sprite w h -- surface )
- over 2* \ pitch
- 16 swap \ bpp
+ over \ pitch
+ 8 swap \ bpp
  0 0 0 0 sdl-create-rgb-surface-from
+ dup set-palette
 ;
 
 \ -- Focus indicator --
@@ -152,7 +158,6 @@ end-sprite SPRITE-FOCUS
 
 : init-focus ( -- )
   SPRITE-FOCUS load-sprite
-  dup true Transparent sdl-set-color-key drop
   focus-tileset tileset-surface !
   2 focus-tileset tileset-w !
   7 focus-tileset tileset-tile-w !
