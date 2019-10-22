@@ -14,16 +14,23 @@ variable mouse-buttons
 : mouse-right? ( -- b )  mouse-buttons @ 4 and ;
 
 0 value focused-element
+0 value hover-element
 
 : focused? ( element -- )  focused-element = ;
+: hover? ( element -- )  hover-element = ;
 : reset-focus ( -- )  0 to focused-element ;
+: reset-hover ( -- )  0 to hover-element ;
 : update-focus ( -- )
+  reset-hover
   page-pointer 0 do
     PAGE i cells + 2@
     over -rot \ keep element
     get-element-rect
     mouse-x @ mouse-y @ point-in-rect? if
-      ( element ) to focused-element leave
+      ( element ) dup
+      to focused-element
+      to hover-element
+      leave
     else drop then
   2 +loop
 ;

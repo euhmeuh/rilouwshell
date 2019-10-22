@@ -135,7 +135,7 @@ end-struct button%
 ;
 
 : get-button-surface ( button -- surface )
-  dup focused?
+  dup hover?
   mouse-left? and if
     button-surface-clicked @
   else
