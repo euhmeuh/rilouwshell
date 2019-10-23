@@ -5,14 +5,6 @@
 
 (
 struct
-  cell% field label-text
-  cell% field label-primary
-  cell% field label-x
-  cell% field label-y
-  cell% field label-w
-end-struct label%
-
-struct
   cell% field input-label
   cell% field input-text
   cell% field input-x

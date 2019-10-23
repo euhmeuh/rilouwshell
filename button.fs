@@ -5,14 +5,14 @@
 
 create button-tileset tileset% %allot drop
 
-0 constant BORDER-LEFT
-1 constant BORDER-RIGHT
+0 constant BUTTON-BORDER-LEFT
+1 constant BUTTON-BORDER-RIGHT
 
-0 value CLICKED
-0 value INVERTED
+0 value DRAW-CLICKED
+0 value DRAW-INVERTED
 
-: clicked? CLICKED if 2 + then ;
-: inverted? INVERTED if 4 + then ;
+: clicked-tile? DRAW-CLICKED if 2 + then ;
+: inverted-tile? DRAW-INVERTED if 4 + then ;
 
 sprite
 l: ..OO..........OO........
@@ -38,7 +38,7 @@ l: ..OO....OO....OO....OO..
 end-sprite BUTTON-SPRITE
 
 struct
-  cell% field button-text
+  ptr%  field button-text
   cell% field button-primary
   cell% field button-enabled
   cell% field button-x
@@ -64,7 +64,7 @@ end-struct button%
 ;
 
 : select-button-surface ( button -- surface )
-  CLICKED if
+  DRAW-CLICKED if
     button-surface-clicked @
   else
     button-surface-normal @
@@ -79,13 +79,15 @@ end-struct button%
   dup
   0 0
   button-tileset
-  BORDER-LEFT inverted? clicked? draw-tileset
+  BUTTON-BORDER-LEFT
+  inverted-tile? clicked-tile? draw-tileset
 
   ( surface )
   r> button-w @ tile/pos 1-
   0
   button-tileset
-  BORDER-RIGHT inverted? clicked? draw-tileset
+  BUTTON-BORDER-RIGHT
+  inverted-tile? clicked-tile? draw-tileset
 ;
 
 : draw-button-lines ( button -- )
@@ -95,7 +97,7 @@ end-struct button%
 
   \ higher line or rect
   dup
-  3  CLICKED if 2 else 0 then
+  3  DRAW-CLICKED if 2 else 0 then
   r@ button-w @ tile/pos 4 -
   r@ button-primary @ if
     TILE 1+ Orange draw-rect
@@ -105,7 +107,7 @@ end-struct button%
 
   \ lower-line or rect
   ( surface )
-  CLICKED
+  DRAW-CLICKED
   r@ button-primary @
   or if
     3  TILE 3 +
@@ -127,7 +129,7 @@ end-struct button%
   r@ select-button-surface
   r> button-text @
   9
-  CLICKED if 5 else 3 then
+  DRAW-CLICKED if 5 else 3 then
   write-at
 ;
 
@@ -140,16 +142,16 @@ end-struct button%
   r@ new-button-surface
   r@ button-surface-clicked !
 
-  r@ button-primary @ 0= to INVERTED
+  r@ button-primary @ 0= to DRAW-INVERTED
 
   \ normal button
-  false to CLICKED
+  false to DRAW-CLICKED
   r@ draw-button-borders
   r@ draw-button-lines
   r@ draw-button-text
 
   \ clicked button
-  true to CLICKED
+  true to DRAW-CLICKED
   r@ draw-button-borders
   r@ draw-button-lines
   r> draw-button-text

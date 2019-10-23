@@ -24,14 +24,17 @@ variable mouse-buttons
   reset-hover
   page-pointer 0 do
     PAGE i cells + 2@
-    over -rot \ keep element
-    get-element-rect
-    mouse-x @ mouse-y @ point-in-rect? if
-      ( element ) dup
-      to focused-element
-      to hover-element
-      leave
-    else drop then
+    ( element type )
+    dup TYPE-LABEL <> if \ labels don't get focus
+      over -rot \ keep element
+      get-element-rect
+      mouse-x @ mouse-y @ point-in-rect? if
+        ( element ) dup
+        to focused-element
+        to hover-element
+        leave
+      else drop then
+    else 2drop then
   2 +loop
 ;
 
