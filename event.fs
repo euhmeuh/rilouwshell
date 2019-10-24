@@ -11,7 +11,8 @@ create tmp-event sdl-event% %allot drop
   mouse-x mouse-y sdl-get-mouse-state mouse-buttons !
 ;
 
-: process-input ( -- )
+: process-input ( page -- )
+  >r
   begin
     tmp-event sdl-poll-event \ while there is an event
   while
@@ -27,11 +28,13 @@ create tmp-event sdl-event% %allot drop
 
       SDL_MOUSEMOTION of
         update-mouse
-        update-focus
+        r@ update-focus
       endof
 
       SDL_MOUSEBUTTONUP of update-mouse endof
       SDL_MOUSEBUTTONDOWN of update-mouse endof
     endcase
   repeat
+
+  r> drop
 ;

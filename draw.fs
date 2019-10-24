@@ -3,6 +3,8 @@
 \ Released under the terms of the GNU GPL version 3
 \ http://rilouw.eu/project/rilouwshell
 
+false value DOUBLE-SCREEN
+
 16 constant TILE
 
 create Palette
@@ -187,7 +189,7 @@ require font.fs
   SDL_INIT_VIDEO sdl-init
   0<> s" Unable to initialize SDL" ?error
 
-  2r@ 2* swap 2* swap
+  2r@ DOUBLE-SCREEN if 2* swap 2* swap then
   16 SDL_SWSURFACE sdl-set-video-mode
   dup 0< s" Unable to set video mode" ?error
   to screen-surface

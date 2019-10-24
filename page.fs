@@ -3,8 +3,11 @@
 \ Released under the terms of the GNU GPL version 3
 \ http://rilouw.eu/project/rilouwshell
 
-0 value page-pointer
-create PAGE 20 cells allot
+struct
+  ptr% field page-name
+  ptr% field page-content
+  cell% field page-cursor
+end-struct page%
 
 variable mouse-x
 variable mouse-y
@@ -20,10 +23,18 @@ variable mouse-buttons
 : hover? ( element -- )  hover-element = ;
 : reset-focus ( -- )  0 to focused-element ;
 : reset-hover ( -- )  0 to hover-element ;
-: update-focus ( -- )
+
+: page-limits ( page -- limit start )
+  >r
+  r@ page-content @
+  r@ page-cursor @ cells +
+  r> page-content @
+;
+
+: update-focus ( page -- )
   reset-hover
-  page-pointer 0 do
-    PAGE i cells + 2@
+  page-limits do
+    i 2@
     ( element type )
     dup TYPE-LABEL <> if \ labels don't get focus
       over -rot \ keep element
@@ -35,28 +46,30 @@ variable mouse-buttons
         leave
       else drop then
     else 2drop then
-  2 +loop
+  2 cells +loop
 ;
 
-: page@ ( -- current-page )  PAGE page-pointer cells + ;
-
-: add-to-page ( element type -- )
-  page@ 2!
-  page-pointer 2 + to page-pointer
+: next-element ( page -- next-element-addr )
+  dup page-content @ swap
+  page-cursor @ cells +
 ;
 
-: render-page ( surface -- )
-  page-pointer 0 do
-    dup \ keep for next loop
+: add-to-page ( element type page -- )
+  >r
+  r@ next-element 2!
+  r@ page-cursor @ 2 +
+  r> page-cursor !
+;
 
-    PAGE i cells + 2@
-    rot >r \ keep surface
-    ( element type )
+: render-page ( surface page -- )
+  page-limits do
+    dup \ keep surface for next loop
+    i 2@
+    ( surface surface element type )
     over focused? if
-      2dup r@ -rot ( element type surface element type )
-      get-element-rect draw-focus-around
+      3dup get-element-rect draw-focus-around
     then
-    r> -rot render-element
-  2 +loop
-  drop
+    render-element
+  2 cells +loop
+  drop \ surface
 ;

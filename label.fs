@@ -4,11 +4,11 @@
 \ http://rilouw.eu/project/rilouwshell
 
 struct
-  ptr%  field label-text
-  cell% field label-primary
   cell% field label-x
   cell% field label-y
   cell% field label-w
+  ptr%  field label-text
+  cell% field label-primary
 
   ptr% field label-surface
 end-struct label%

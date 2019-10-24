@@ -1,4 +1,4 @@
 .PHONY: run
 
 run:
-	gforth -- main.fs -e ".s bye"
+	gforth -- test/hello-app.fs -e ".s bye"

@@ -38,12 +38,12 @@ l: ..OO....OO....OO....OO..
 end-sprite BUTTON-SPRITE
 
 struct
-  ptr%  field button-text
-  cell% field button-primary
-  cell% field button-enabled
   cell% field button-x
   cell% field button-y
   cell% field button-w
+  ptr%  field button-text
+  cell% field button-primary
+  cell% field button-enabled
 
   ptr% field button-surface-normal
   ptr% field button-surface-clicked
