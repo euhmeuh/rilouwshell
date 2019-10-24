@@ -73,3 +73,20 @@ variable mouse-buttons
   2 cells +loop
   drop \ surface
 ;
+
+: page ( -- #element ) 0 ;
+: end-page ( ...element&type #element <name> -- )
+  create page% %allot >r \ keep page
+  ( ...element&type #element )
+
+  \ allot content
+  dup here swap 2* cells allot r@ page-content !
+
+  r> swap
+  \ consume each element
+  0 do
+    dup >r add-to-page
+    r>
+  loop
+  drop
+;

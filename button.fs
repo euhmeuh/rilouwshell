@@ -44,6 +44,7 @@ struct
   ptr%  field button-text
   cell% field button-primary
   cell% field button-enabled
+  cell% field button-event
 
   ptr% field button-surface-normal
   ptr% field button-surface-clicked
@@ -157,7 +158,15 @@ end-struct button%
   r> draw-button-text
 ;
 
+: no-surface? ( button -- b )
+  button-surface-normal @ 0=
+;
+
 : get-button-surface ( button -- surface )
+  dup no-surface? if
+    dup init-button
+  then
+
   dup hover?
   mouse-left? and if
     button-surface-clicked @
@@ -186,3 +195,16 @@ end-struct button%
 ;
 
 ' (get-button-rect) is get-button-rect
+
+: button, ( #element x y w text primary enabled event -- element type #element )
+  button% %allot >r
+  r@ button-event !
+  r@ button-enabled !
+  r@ button-primary !
+  r@ button-text !
+  r@ button-w !
+  r@ button-y !
+  r@ button-x !
+  1+ \ increment #element
+  r> TYPE-BUTTON rot
+;

@@ -30,9 +30,20 @@ end-struct label%
   write-at
 ;
 
+: no-surface? ( label -- b )
+  label-surface @ 0=
+;
+
+: get-label-surface ( label -- surface )
+  dup no-surface? if
+    dup init-label
+  then
+  label-surface @
+;
+
 : (render-label) ( surface label -- )
   >r
-  r@ label-surface @
+  r@ get-label-surface
   swap
   r@ label-x @ tile/pos
   r> label-y @ tile/pos
@@ -50,3 +61,14 @@ end-struct label%
 ;
 
 ' (get-label-rect) is get-label-rect
+
+: label, ( #element x y w text primary -- element type #element )
+  label% %allot >r
+  r@ label-primary !
+  r@ label-text !
+  r@ label-w !
+  r@ label-y !
+  r@ label-x !
+  1+ \ increment #element
+  r> TYPE-LABEL rot
+;
