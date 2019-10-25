@@ -43,25 +43,16 @@ page
   1 3 5  back-text       false    true     #GOBACK    button,
 end-page DETAILS-PAGE
 
-(
-
 state-machine
-  HELLO-PAGE starts
-  #EXIT     will: stop-machine ;
-  #DETAILS  will: DETAILS-PAGE go-page ;
-  #GOBACK   will: HELLO-PAGE go-page ;
+  HELLO-PAGE state
+    #EXIT    => stop-machine         ; end-trans
+    #DETAILS => DETAILS-PAGE go-page ; end-trans
+  end-state
+  DETAILS-PAGE state
+    #GOBACK  => HELLO-PAGE go-page ; end-trans
+  end-state
 end-state-machine HELLO-APP
-
-HELLO-APP start-machine
-
-)
-
-create hello-app machine% %allot drop
 
 \ --- Main program ---
 
-: init-app ( -- )
-  HELLO-PAGE hello-app machine-page !
-;
-
-' init-app hello-app start-machine
+false HELLO-APP start-machine

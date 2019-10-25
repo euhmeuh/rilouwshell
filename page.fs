@@ -80,7 +80,7 @@ variable mouse-buttons
   ( ...element&type #element )
 
   \ allot content
-  dup here swap 2* cells allot r@ page-content !
+  dup 2* cells here swap allot r@ page-content !
 
   r> swap
   \ consume each element

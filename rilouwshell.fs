@@ -24,7 +24,8 @@ require button.fs
 0 value current-machine
 
 : current-page ( -- page )
-  current-machine machine-page @
+  current-machine machine-state @
+  state-page @
 ;
 
 : render ( -- )
@@ -43,7 +44,7 @@ require button.fs
   begin
     quit? 0=
   while
-    current-page process-input
+    current-machine process-input
     render
     flip
     clean
@@ -55,4 +56,8 @@ require button.fs
 
 : stop-machine ( -- )
   true to quit?
+;
+
+: go-page ( page -- )
+  drop
 ;

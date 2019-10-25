@@ -11,8 +11,8 @@ create tmp-event sdl-event% %allot drop
   mouse-x mouse-y sdl-get-mouse-state mouse-buttons !
 ;
 
-: process-input ( page -- )
-  >r
+: process-input ( machine -- )
+  machine-state @ state-page @ >r
   begin
     tmp-event sdl-poll-event \ while there is an event
   while

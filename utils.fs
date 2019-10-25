@@ -18,3 +18,25 @@
   y yr hr + < and
   and
 ;
+
+: array-len ( array -- len ) @ ;
+: array-addr ( array -- addr ) cell+ ;
+: array@ ( n array -- element )
+  2dup array-len >= abort" array overflow"
+  array-addr swap cells + @
+;
+
+: make-array ( len -- array )
+  dup 1+ cells here swap allot
+      tuck ! \ save length
+;
+
+: array-limits ( array -- limit start )
+  dup array-len swap array-addr ( len addr )
+  tuck swap cells + swap
+;
+
+: read-array ( ...element len array -- )
+  cell+ tuck swap cells + swap
+  do i ! cell +loop
+;
