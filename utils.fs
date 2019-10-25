@@ -37,6 +37,11 @@
 ;
 
 : read-array ( ...element len array -- )
-  cell+ tuck swap cells + swap
+  array-addr tuck swap cells + swap
   do i ! cell +loop
+;
+
+: rev-read-array ( ...element len array -- )
+  tuck swap cells +
+  do i ! cell -loop
 ;

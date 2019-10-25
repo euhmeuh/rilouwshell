@@ -19,9 +19,9 @@ end-struct state%
   dup make-array
   ( ...states #state array )
   dup r@ machine-states !
-      read-array
+      rev-read-array
   \ set first state
-  1 r@ machine-states array@
+  0 r@ machine-states @ array@
   r> machine-state !
 ;
 
@@ -30,7 +30,7 @@ end-struct state%
   state% %allot >r
   dup make-array
   dup r@ state-transitions !
-      read-array
+      rev-read-array
   r@ state-page !
   1+ \ increment #state
   r> swap
