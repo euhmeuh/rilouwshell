@@ -45,11 +45,11 @@ end-page DETAILS-PAGE
 
 state-machine
   HELLO-PAGE state
-    #EXIT    => stop-machine         ; end-trans
-    #DETAILS => DETAILS-PAGE go-page ; end-trans
+    #EXIT    -> stop-machine         <-
+    #DETAILS -> DETAILS-PAGE go-page <-
   end-state
   DETAILS-PAGE state
-    #GOBACK  => HELLO-PAGE go-page ; end-trans
+    #GOBACK  -> HELLO-PAGE go-page <-
   end-state
 end-state-machine HELLO-APP
 

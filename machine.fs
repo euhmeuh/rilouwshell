@@ -36,9 +36,10 @@ end-struct state%
   r> swap
 ;
 
-: => ( -- xt colon-sys ) :noname ;
-: end-trans ( #trans event xt colon-sys -- trans #trans )
+: -> ( -- xt colon-sys ) :noname ;
+: <- ( #trans event xt colon-sys -- trans #trans )
+  postpone ;
   here -rot
   swap , , \ put event and xt here
   swap 1+ \ increment #trans
-;
+; immediate
