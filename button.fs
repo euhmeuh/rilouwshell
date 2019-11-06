@@ -167,8 +167,7 @@ end-struct button%
     dup init-button
   then
 
-  dup hover?
-  mouse-left? and if
+  dup clicked? if
     button-surface-clicked @
   else
     button-surface-normal @

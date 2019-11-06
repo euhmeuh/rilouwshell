@@ -13,6 +13,17 @@ struct
   ptr% field state-transitions
 end-struct state%
 
+0 value current-machine
+
+: current-page ( -- page )
+  current-machine machine-state @
+  state-page @
+;
+
+: go-page ( page -- )
+  drop
+;
+
 : state-machine ( -- #state ) 0 ;
 : end-state-machine ( ...states #state <name> -- )
   create machine% %allot >r
