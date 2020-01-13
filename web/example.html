@@ -72,31 +72,6 @@
         <button class="theme-selector-button-black-and-white" type="button" onclick="setTheme('black-and-white')"></button>
     </aside>
 
-    <template id="rilouw-checkbox-template">
-        <label tabindex="0" role="checkbox" class="bg-full">
-            <span class="label">{body}</span>
-            <input type="checkbox" name="{name}" value="true" hidden>
-            <datalist>
-                <option value="false">{unchecked}</option>
-                <option value="true">{checked}</option>
-            </datalist>
-        </label>
-    </template>
-
-    <template id="rilouw-selector-template">
-        <label>
-            <span class="label">{body}</span>
-            <button type="button"></button>
-            <input type="hidden" name="{name}">
-        </label>
-        <aside class="modal hidden" role="dialog">
-            <figure class="box tertiary">
-                <figcaption>{body}</figcaption>
-                <datalist></datalist>
-            </figure>
-        </aside>
-    </template>
-
     <script type="text/javascript" src="_.js"></script>
     <script type="text/javascript" src="page.js"></script>
     <script type="text/javascript" src="rilouwshell.js"></script>
