@@ -39,11 +39,25 @@ textarea:focus-within,
 button:hover,
 button:focus,
 option.selected:hover,
-option.selected:focus
- {
-    outline: 1px solid var(--high);
-    outline-offset: 2px;
-    -moz-outline-radius: calc(var(--border-radius) + 2px);
+option.selected:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--high);
+}
+
+/* === Links === */
+
+a {
+    text-decoration: underline;
+}
+
+a,
+a:visited {
+    color: var(--accent);
+}
+
+a:hover,
+a:focus {
+    color: var(--high);
 }
 
 /* === Button === */
@@ -245,7 +259,7 @@ label button:focus {
     border: none;
     color: var(--accent);
     background-color: transparent;
-    outline: none;
+    box-shadow: none;
 }
 
 label input[type=text],
@@ -300,5 +314,5 @@ label:focus-within datalist option.selected {
 
 label datalist option.selected:hover,
 label datalist option.selected:focus {
-    outline: none;
+    box-shadow: none;
 }
