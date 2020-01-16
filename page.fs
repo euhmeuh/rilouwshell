@@ -17,12 +17,16 @@ variable mouse-buttons
 : mouse-right? ( -- b )  mouse-buttons @ 4 and ;
 
 0 value focused-element
-0 value hover-element
+0 value hovered-element
+0 value clicked-element
 
 : focused? ( element -- )  focused-element = ;
-: hover? ( element -- )  hover-element = ;
-: reset-focus ( -- )  0 to focused-element ;
-: reset-hover ( -- )  0 to hover-element ;
+: hovered? ( element -- )  hovered-element = ;
+: clicked? ( element -- )  clicked-element = ;
+
+: reset-focus   ( -- )  0 to focused-element ;
+: reset-hover   ( -- )  0 to hovered-element ;
+: reset-clicked ( -- )  0 to clicked-element ;
 
 : page-limits ( page -- limit start )
   >r
@@ -42,7 +46,7 @@ variable mouse-buttons
       mouse-x @ mouse-y @ point-in-rect? if
         ( element ) dup
         to focused-element
-        to hover-element
+        to hovered-element
         leave
       else drop then
     else 2drop then

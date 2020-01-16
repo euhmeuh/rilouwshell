@@ -11,6 +11,16 @@ create tmp-event sdl-event% %allot drop
   mouse-x mouse-y sdl-get-mouse-state mouse-buttons !
 ;
 
+: update-clicked ( mouse-down? -- )
+  if
+    hovered-element to clicked-element
+  else
+    clicked-element hovered-element =
+    if clicked-element click-element then
+    reset-clicked
+  then
+;
+
 : process-input ( machine -- )
   machine-state @ state-page @ >r
   begin
@@ -31,8 +41,8 @@ create tmp-event sdl-event% %allot drop
         r@ update-focus
       endof
 
-      SDL_MOUSEBUTTONUP of update-mouse endof
-      SDL_MOUSEBUTTONDOWN of update-mouse endof
+      SDL_MOUSEBUTTONUP   of update-mouse  false update-clicked endof
+      SDL_MOUSEBUTTONDOWN of update-mouse  true  update-clicked endof
     endcase
   repeat
 

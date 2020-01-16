@@ -58,6 +58,11 @@ defer get-toggle-rect ( toggle -- x y w h )
   endcase
 ;
 
+: click-element ( element -- )
+  dup if ." clicked" then
+  drop
+;
+
 : get-element-rect ( element type -- )
   case
     TYPE-LABEL  of get-label-rect endof

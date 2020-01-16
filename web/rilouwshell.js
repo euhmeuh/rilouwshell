@@ -26,10 +26,54 @@ const RilouwShell = (function(){
     return Object.assign({}, ...Array.from(element.attributes, ({name, value}) => ({[name]: value})));
   }
 
+  const TEMPLATES = {
+    'rilouw-checkbox': {
+      tag: 'label',
+      attrs: { tabindex: 0, role: 'checkbox', class: 'bg-full' },
+      children: [
+        { tag: 'span', attrs: { class: 'label' }, text: '{body}'},
+        { tag: 'input', attrs: { type: 'checkbox', name: '{name}', value: 'true', hidden: '' }},
+        {
+          tag: 'datalist', children: [
+            { tag: 'option', attrs: { value: 'false' }, text: '{unchecked}' },
+            { tag: 'option', attrs: { value: 'true' }, text: '{checked}' }
+          ]
+        },
+      ]
+    },
+    'rilouw-selector': {
+      tag: 'div',
+      children: [
+        {
+          tag: 'label',
+          children: [
+            { tag: 'span', attrs: { class: 'label' }, text: '{body}' },
+            { tag: 'button', attrs: { type: 'button' } },
+            { tag: 'input', attrs: { type: 'hidden', name: '{name}' } }
+          ]
+        },
+      ]
+    },
+    'rilouw-modal': {
+      tag: 'aside',
+      attrs: { class: 'modal hidden', role: 'dialog' },
+      children: [
+        {
+          tag: 'figure',
+          attrs: { class: 'box tertiary' },
+          children: [
+            { tag: 'figcaption', text: '{body}' },
+            { tag: 'datalist' },
+          ]
+        }
+      ]
+    }
+  };
+
   class RilouwElement extends HTMLElement {
     constructor(name) {
       super();
-      const template = $.byId(`${name}-template`);
+      const template = Page.createElementFromJson(TEMPLATES[name]);
       const attributes = Object.assign({body: this.innerHTML}, getAttributes(this));
       const content = this.processTemplate(template, attributes);
       this.innerHTML = "";
@@ -38,9 +82,8 @@ const RilouwShell = (function(){
     }
 
     processTemplate(template, attributes) {
-      const root = template.content.cloneNode(true);
-      Page.evalTemplate(root, attributes);
-      return root;
+      Page.evalTemplate(template, attributes);
+      return template;
     }
 
     init() {}
@@ -81,16 +124,18 @@ const RilouwShell = (function(){
     }
 
     processTemplate(template, attributes) {
-      const root = RilouwElement.prototype.processTemplate.call(this, template, attributes);
+      const modal = Page.createElementFromJson(TEMPLATES['rilouw-modal']);
+      template.appendChild(modal);
+      Page.evalTemplate(template, attributes);
       this.optionValues = JSON.parse(attributes['values']);
       Object.entries(this.optionValues).forEach(([key, text]) => {
-        $(root).one('datalist').appendChild(Page.createElementFromJson({
+        $(template).one('datalist').appendChild(Page.createElementFromJson({
           tag: 'option',
           text: text,
           attrs: { tabindex: 0, role: 'button', value: key }
         }));
       });
-      return root;
+      return template;
     }
 
     init(attributes) {

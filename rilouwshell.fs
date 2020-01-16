@@ -21,12 +21,6 @@ require button.fs
 
 512 value WIDTH
 384 value HEIGHT
-0 value current-machine
-
-: current-page ( -- page )
-  current-machine machine-state @
-  state-page @
-;
 
 : render ( -- )
   buffer-surface current-page render-page
@@ -56,8 +50,4 @@ require button.fs
 
 : stop-machine ( -- )
   true to quit?
-;
-
-: go-page ( page -- )
-  drop
 ;
