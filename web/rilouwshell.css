@@ -38,6 +38,8 @@ label:focus-within,
 textarea:focus-within,
 button:hover,
 button:focus,
+a.button:hover,
+a.button:focus,
 option.selected:hover,
 option.selected:focus {
     outline: none;
@@ -62,42 +64,52 @@ a:focus {
 
 /* === Button === */
 
-button {
+button,
+a.button {
     background-color: var(--bg);
     border: var(--border-width) solid black;
     padding: 12px;
-    min-width: 16ch;
+    min-width: 12ch;
     border-radius: var(--border-radius);
     font-size: inherit;
     font-family: sans-serif;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: content-box;
 }
 
-button:hover {
+button:hover,
+a.button:hover {
     cursor: pointer;
 }
 
-button.secondary {
+button.secondary,
+a.button.secondary {
     color: var(--accent);
     border-color: var(--accent);
 }
 
 button.secondary:hover,
-button.secondary:focus {
+button.secondary:focus,
+a.button.secondary:hover,
+a.button.secondary:focus {
     border-color: var(--high);
 }
 
-button.primary {
+button.primary,
+a.button.primary {
     color: var(--bg);
     border-color: var(--accent);
     background-color: var(--accent);
 }
 
 button.primary:hover,
-button.primary:focus {
+button.primary:focus,
+a.button.primary:hover,
+a.button.primary:focus {
     border-color: var(--high);
     background-color: var(--high);
 }
-
 
 button::-moz-focus-inner {
   border: 0;
@@ -112,7 +124,8 @@ button::-moz-focus-inner {
     flex-direction: column;
 }
 
-.button-box button {
+.button-box button,
+.button-box a.button {
     margin-bottom: 12px;
 }
 
@@ -122,16 +135,19 @@ button::-moz-focus-inner {
         flex-direction: row;
     }
 
-    .button-box button {
+    .button-box button,
+    .button-box a.button {
         margin-left: 18px;
     }
 
-    .button-box .pull-left {
+    .button-box button.pull-left,
+    .button-box a.button.pull-left {
         margin-right: auto;
         margin-left: 0px;
     }
 
-    .button-box .pull-right {
+    .button-box button.pull-right,
+    .button-box a.button.pull-right {
         margin-left: auto;
         margin-right: 0px;
     }
