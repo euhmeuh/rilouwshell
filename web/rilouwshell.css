@@ -32,6 +32,10 @@ body {
     background-color: var(--high);
 }
 
+.display-none {
+    display: none !important;
+}
+
 /* === Outline === */
 
 label:focus-within,
@@ -171,6 +175,10 @@ button::-moz-focus-inner {
 .box.primary {
     color: var(--bg);
     background-color: var(--accent);
+}
+
+.box.primary a {
+    color: var(--bg);
 }
 
 /* === Modal === */
