@@ -3,7 +3,7 @@
 \ Released under the terms of the GNU GPL version 3
 \ http://rilouw.eu/project/rilouwshell
 
-require sdl.fs
+require sdl/sdl.fs
 
 require utils.fs
 require machine.fs
