@@ -4,9 +4,10 @@
  * http://rilouw.eu/projects/rilouwos
  */
 
-#include "client.h"
+#ifndef RILOUWSHELL_WAYLAND_BUFFER_H
+#define RILOUWSHELL_WAYLAND_BUFFER_H
 
-int
-main() {
-  return rsh_client_start();
-}
+void
+rsh_init_buffer(struct rsh_client_state *state);
+
+#endif

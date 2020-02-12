@@ -4,9 +4,12 @@
  * http://rilouw.eu/projects/rilouwos
  */
 
+#ifndef RILOUWSHELL_WAYLAND_SURFACE_H
+#define RILOUWSHELL_WAYLAND_SURFACE_H
+
 #include "client.h"
 
-int
-main() {
-  return rsh_client_start();
-}
+void
+rsh_init_surface(struct rsh_client_state *state);
+
+#endif

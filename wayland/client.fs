@@ -5,6 +5,7 @@
 
 c-library rilouwshell_wayland_client
 s" wayland-client" add-lib
+s" rilouwshell-wayland-client" add-lib
 
 \c #include "client.h"
 

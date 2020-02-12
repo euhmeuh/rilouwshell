@@ -4,9 +4,12 @@
  * http://rilouw.eu/projects/rilouwos
  */
 
-#include "client.h"
+#ifndef RILOUWSHELL_WAYLAND_SHARE_H
+#define RILOUWSHELL_WAYLAND_SHARE_H
+
+#include <stdio.h>
 
 int
-main() {
-  return rsh_client_start();
-}
+rsh_create_shared_file(off_t size);
+
+#endif
