@@ -11,6 +11,17 @@
 #include "client.h"
 #include "buffer.h"
 
+void
+rsh_paint_pixels(struct rsh_client_state *state) {
+  int n;
+  uint32_t *pixels = state->shm_data;
+  int size = state->width * state->height;
+  printf("Painting pixels\n");
+  for (n = 0; n < size; n++) {
+    *pixels++ = n%7 == 0 ? 0x00 : 0xE88030;
+  }
+}
+
 static void
 wl_surface_enter(
   void *data,
@@ -49,6 +60,7 @@ layer_surface_configure(
   state->height = height;
   zwlr_layer_surface_v1_ack_configure(state->layer_surface, serial);
   rsh_init_buffer(state);
+  rsh_paint_pixels(state);
   wl_surface_attach(state->surface, state->buffer, 0, 0);
   wl_surface_commit(state->surface);
 }
@@ -80,7 +92,7 @@ rsh_init_surface(struct rsh_client_state *state) {
     state->shell,
     state->surface,
     NULL,
-    ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM,
+    ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY,
     "desktop"
   );
 

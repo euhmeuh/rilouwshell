@@ -22,10 +22,12 @@ pointer_handle_button(
   uint32_t serial,
   uint32_t time,
   uint32_t button,
-  uint32_t state
+  uint32_t btn_state
 ) {
-  if (button == BTN_LEFT && state == WL_POINTER_BUTTON_STATE_PRESSED) {
+  struct rsh_client_state *state = data;
+  if (button == BTN_LEFT && btn_state == WL_POINTER_BUTTON_STATE_PRESSED) {
     printf("Button pressed\n");
+    state->running = false;
   }
 }
 
@@ -44,9 +46,11 @@ seat_handle_capabilities(
   uint32_t capabilities
 ) {
   printf("Handling seat capabilities\n");
+  struct rsh_client_state *state = data;
+  state->seat = seat;
   if (capabilities & WL_SEAT_CAPABILITY_POINTER) {
     struct wl_pointer *pointer = wl_seat_get_pointer(seat);
-    wl_pointer_add_listener(pointer, &pointer_listener, seat);
+    wl_pointer_add_listener(pointer, &pointer_listener, state);
   }
 }
 
@@ -63,11 +67,12 @@ global_registry_handle(
   uint32_t version
 ) {
   struct rsh_client_state *state = data;
-  printf("Handling interface %s\n", interface);
+  printf("Receiving interface %s - ", interface);
 
   if (strcmp(interface, wl_seat_interface.name) == 0) {
     state->seat = wl_registry_bind(registry, id, &wl_seat_interface, 1);
     wl_seat_add_listener(state->seat, &seat_listener, state);
+    printf("HANDLED\n");
     return;
   }
 
@@ -78,17 +83,23 @@ global_registry_handle(
       &zwlr_layer_shell_v1_interface,
       zwlr_layer_shell_v1_interface.version
     );
+    printf("HANDLED\n");
     return;
   }
 
   if (strcmp(interface, wl_compositor_interface.name) == 0) {
     state->compositor = wl_registry_bind(registry, id, &wl_compositor_interface, 1);
+    printf("HANDLED\n");
     return;
   }
 
   if (strcmp(interface, wl_shm_interface.name) == 0) {
     state->shm = wl_registry_bind(registry, id, &wl_shm_interface, 1);
+    printf("HANDLED\n");
+    return;
   }
+
+  printf("NO\n");
 }
 
 static void
@@ -131,7 +142,7 @@ rsh_client_start() {
 
   printf("Starting program loop\n");
 
-  while (wl_display_dispatch(display) != -1 && state.running) {
+  while (state.running && wl_display_dispatch(display) != -1) {
     // Do nothing for now
   }
 

@@ -20,7 +20,7 @@ struct rsh_client_state {
   uint32_t width;
   uint32_t height;
 
-  void *shm_data; // raw pixel data
+  uint32_t *shm_data; // raw pixel data
 
   struct zwlr_layer_shell_v1 *shell;
   struct zwlr_layer_surface_v1 *layer_surface;
